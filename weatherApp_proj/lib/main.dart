@@ -50,13 +50,15 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.blueAccent,
-        child: Row(
-          children: [
-            TextButton(child: Text(tabs[0]), onPressed: () {  },)
-          ],
-        ),
+      bottomNavigationBar: BottomNavigationBar(
+         items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.access_alarm),
+          label: "Current"),
+          BottomNavigationBarItem(icon: Icon(Icons.today),
+          label: "Today"),
+          BottomNavigationBarItem(icon: Icon(Icons.next_week),
+          label: "Weekly")
+        ],
       ),
     );
   }

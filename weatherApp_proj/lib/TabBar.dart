@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TabBar extends StatelessWidget{
-  const TabBar({super.key});
+   TabBar({super.key});
 
   final tabTexts = ["Currently", "Today", "Weekly"];
 
@@ -11,13 +11,11 @@ class TabBar extends StatelessWidget{
         length: 3,
         child: Scaffold(
           appBar: AppBar(
-            bottom: const TabBar(tabs: [
-                                  Tab(icon: Icon(Icons.add),)
-            ]),
+
           ),
         ),
       ),
-    )
+    );
 
   }
 }
