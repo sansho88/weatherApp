@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
 
-class TabBar extends StatelessWidget{
-   TabBar({super.key});
+class WeatherBottomBar extends StatelessWidget {
+  final void Function(int) onTap;
+  final int selectedItemIndex;
+
+   WeatherBottomBar({super.key, required this.onTap, required this.selectedItemIndex});
 
   final tabTexts = ["Currently", "Today", "Weekly"];
 
+  @override
   Widget build(BuildContext context){
-    return MaterialApp(
-      home: DefaultTabController(
-        length: 3,
-        child: Scaffold(
-          appBar: AppBar(
-
-          ),
+    return BottomNavigationBar(
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.access_alarm),
+            label: "Current"),
+        BottomNavigationBarItem(icon: Icon(Icons.today),
+          label: "Today",
         ),
-      ),
+        BottomNavigationBarItem(icon: Icon(Icons.next_week),
+            label: "Weekly")
+      ],
+      onTap: onTap,
+      currentIndex: selectedItemIndex,
     );
 
   }
 }
+

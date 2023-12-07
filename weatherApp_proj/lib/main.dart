@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app_proj/TabBar.dart';
+import 'package:animated_search_bar/animated_search_bar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,12 +13,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'WEATHER',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Weather App'),
     );
   }
 }
@@ -31,35 +33,74 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  var selectedItemIndex = 0;
+  final mode = ["Current", "Today", "Weekly"];
+  var location = "";
+  TextEditingController controller = TextEditingController();
 
+  onCitySearched(){
+    location = controller.text;
+  }
 
-  
   @override
   Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            title: Text(widget.title),
+            bottom: AppBar(
+              actions: [
+                IconButton(onPressed: (){onCitySearched();}, icon: const Icon(Icons.send))
+              ],
+              title: AnimatedSearchBar(
+                onFieldSubmitted: onCitySearched(),
+                onChanged: (_){},
+                controller: controller,
+              ),
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            ),
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: const Center(
-        child: Column(
-
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.access_alarm),
-          label: "Current"),
-          BottomNavigationBarItem(icon: Icon(Icons.today),
-          label: "Today"),
-          BottomNavigationBarItem(icon: Icon(Icons.next_week),
-          label: "Weekly")
-        ],
-      ),
+          ),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: SingleChildScrollView(
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height - 176,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children:[ 
+                            Text(
+                            mode[selectedItemIndex],
+                            style:
+                                const TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
+                          ),
+                          Text(location,
+                            style:
+                              const TextStyle(fontSize: 32),
+                          )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          bottomNavigationBar: WeatherBottomBar(
+              onTap: (index) {
+                setState(() {
+                  selectedItemIndex = index;
+                });
+              },
+              selectedItemIndex: selectedItemIndex)),
     );
   }
 }
