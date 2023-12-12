@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:searchable_listview/searchable_listview.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:weather_app_proj/TabBar.dart';
@@ -7,6 +7,7 @@ import 'package:animated_search_bar/animated_search_bar.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'CityDataItem.dart';
+import 'WeatherItem.dart';
 import 'SearchableCityList.dart';
 
 
@@ -46,14 +47,6 @@ class _MyHomePageState extends State<MyHomePage> {
   var city = "";
   bool isCitySearched = false;
   WeatherItem? weatherItem;
-  List<CityData> cities = [
-    // Populate this list with your CityData objects
-    CityData(name: "lyon", latitude: 45.74846, longitude: 4.84671, elevation: 173.0, featureCode: 'PPLA', countryCode: 'FR', country: "France", countryId: 0),
-    CityData(name: "Paris", latitude: 45.74846, longitude: 4.84671, elevation: 173.0, featureCode: 'PPLA', countryCode: 'FR', country: "France", countryId: 0),
-    CityData(name: "Tokyo", latitude: 45.74846, longitude: 4.84671, elevation: 173.0, featureCode: 'PPLA', countryCode: 'FR', country: "France", countryId: 0),
-    CityData(name: "Londres", latitude: 45.74846, longitude: 4.84671, elevation: 173.0, featureCode: 'PPLA', countryCode: 'FR', country: "France", countryId: 0),
-    // Add more CityData objects here
-  ];
 
   CityData? cityData;
 
@@ -96,23 +89,27 @@ class _MyHomePageState extends State<MyHomePage> {
     return await Geolocator.getCurrentPosition();
   }
 
-  Future<void> fetchCitiesData(String location) async{
-  var baseUrl = Uri.parse('https://geocoding-api.open-meteo.com/v1/search?name=$location&count=10&language=en&format=json');
 
-  try{
-    var response = await http.get(baseUrl);
-    if (response.statusCode == 200){
-      Map<String, dynamic> citiesList = jsonDecode(response.body);
-      for (var city in citiesList.entries) {
-        debugPrint("city: $city");
+  Future<List<CityDataItem>> fetchCitiesData(String search) async {
+    final String apiUrl = 'https://geocoding-api.open-meteo.com/v1/search?name=$search&count=10&language=fr&format=json';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = jsonDecode(response.body);
+        List<dynamic> results = data['results'];
+        List<CityDataItem> cityDataList = results.map((json) => CityDataItem.fromJson(json)).toList();
+        return cityDataList;
+      } else {
+        debugPrint('Request failed with status: ${response.statusCode}');
+        return [];
       }
-      /*Map<String, dynamic> jsonResponse = json.decode(response.body);
-      cityData = CityData.fromJson(jsonResponse);*/
+    } catch (e) {
+      print('Error fetching data: $e');
+      return [];
     }
-  }catch(error){
-    debugPrint("Something wrong happened dude: $error");
   }
-}
   
   Future<void> fetchData(Position position) async {
     var baseUrl = Uri.parse('https://api.open-meteo.com/v1/forecast?'
@@ -153,17 +150,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 });}, icon: const Icon(Icons.gps_fixed)),
 
               ],
-              title: SearchableCityList(initialList: cities),/*AnimatedSearchBar(
-                onFieldSubmitted: (_){
-                  setState(() {
-                    city = controller.text;
-                    isCitySearched = true;
-                    fetchCitiesData(city);
-                  });
-                 },
-                onChanged: (_){},
-                controller: controller,
-              ),*/
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             ),
 
@@ -181,8 +167,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children:[
-
-                            Text(
+                           Text(
                             mode[selectedItemIndex],
                             style:
                                 const TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
@@ -212,7 +197,63 @@ class _MyHomePageState extends State<MyHomePage> {
                                     }
                                   }
 
-                                })
+                                }),
+                            /*SearchableCityList(initialList: cities),*/
+                            TypeAheadField<CityDataItem>(
+                              suggestionsCallback: (search) async {
+                                if (search.isNotEmpty) {
+                                  debugPrint("Search of $search initiated");
+                                  return await fetchCitiesData(search);
+                                } else {
+                                  debugPrint("Nothing to search");
+                                  return [];
+                                }
+                              },
+                              builder: (context, controller, focusNode) {
+                                return TextField(
+                                    controller: controller,
+                                    focusNode: focusNode,
+                                    autofocus: true,
+                                    decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        labelText: 'City'
+                                    )
+                                );
+                              },
+                              itemBuilder: (context, city) {
+                                return ListTile(
+                                  title: Text(city.name),
+                                  subtitle: Text("${city.countryCode}, ${city.longitude}, ${city.latitude}"),
+                                );
+                              },
+                              onSelected: (city) {
+                                Navigator.of(context).push<void>(
+                                  MaterialPageRoute(
+                                    builder: (context) => CityDataItem(name: city.name,
+                                      latitude: city.latitude,
+                                      longitude: city.longitude,
+                                      elevation: city.elevation,
+                                      featureCode: city.featureCode,
+                                      countryCode: city.countryCode,
+                                      id: 0,
+                                      admin1Id: 0,
+                                      admin2Id: 0,
+                                      admin3Id: 0,
+                                      admin4Id: 0,
+                                      timezone: '',
+                                      population: 0,
+                                      postcodes: [],
+                                      countryId: 0,
+                                      country: '',
+                                      admin1: '',
+                                      admin2: '',
+                                      admin3: '',
+                                      admin4: '',
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
                           ],
                         ),
                       ),
@@ -233,62 +274,3 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 }
-
-class WeatherItem {
-  final double latitude;
-  final double longitude;
-  /*final Map<String, dynamic> hourlyUnits;
-  final List<String> hourlyTime;
-  final List<double> hourlyTemperature;*/
-
-  WeatherItem({
-    required this.latitude,
-    required this.longitude,
-    /*required this.hourlyUnits,
-    required this.hourlyTime,
-    required this.hourlyTemperature,*/
-  });
-
-  factory WeatherItem.fromJson(Map<String, dynamic> json) {
-    return WeatherItem(
-      latitude: json['latitude'],
-      longitude: json['longitude'],
-      /*hourlyUnits: json['hourly_units'],
-      hourlyTime: List<String>.from(json['hourly']['time']),
-      hourlyTemperature: List<double>.from(json['hourly']['temperature_2m']),*/
-    );
-  }
-
-  Map<int, String> weatherCodes = {
-    0: 'Clear sky',
-    1: 'Mainly clear',
-    2: 'Partly cloudy',
-    3: 'Overcast',
-    45: 'Fog',
-    48: 'Depositing rime fog',
-    51: 'Drizzle: Light intensity',
-    53: 'Drizzle: Moderate intensity',
-    55: 'Drizzle: Dense intensity',
-    56: 'Freezing Drizzle: Light intensity',
-    57: 'Freezing Drizzle: Dense intensity',
-    61: 'Rain: Slight intensity',
-    63: 'Rain: Moderate intensity',
-    65: 'Rain: Heavy intensity',
-    66: 'Freezing Rain: Light intensity',
-    67: 'Freezing Rain: Heavy intensity',
-    71: 'Snow fall: Slight intensity',
-    73: 'Snow fall: Moderate intensity',
-    75: 'Snow fall: Heavy intensity',
-    77: 'Snow grains',
-    80: 'Rain showers: Slight intensity',
-    81: 'Rain showers: Moderate intensity',
-    82: 'Rain showers: Violent intensity',
-    85: 'Snow showers: Slight intensity',
-    86: 'Snow showers: Heavy intensity',
-    95: 'Thunderstorm: Slight or moderate',
-    96: 'Thunderstorm with slight hail',
-    99: 'Thunderstorm with heavy hail',
-  };
-}
-
-

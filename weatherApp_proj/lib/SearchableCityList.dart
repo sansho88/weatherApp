@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:searchable_listview/searchable_listview.dart';
+import 'CityDataItem.dart';
 
 class CityData {
   final int id;
@@ -75,14 +76,34 @@ class CityData {
 class SearchableCityList extends StatelessWidget {
   final List<CityData> initialList;
 
-  const SearchableCityList({required this.initialList});
+  const SearchableCityList({super.key, required this.initialList});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(width: 300, height: 100,
       child: SearchableList<CityData>(
         initialList: initialList,
-        builder: (List<CityData> list, int index, CityData city) => CityDataItem(city: city),
+        builder: (List<CityData> list, int index, CityData city) => CityDataItem(name: city.name,
+          latitude: city.latitude,
+          longitude: city.longitude,
+          elevation: city.elevation,
+          featureCode: city.featureCode,
+          countryCode: city.countryCode,
+          id: 0,
+          admin1Id: 0,
+          admin2Id: 0,
+          admin3Id: 0,
+          admin4Id: 0,
+          timezone: '',
+          population: 0,
+          postcodes: [],
+          countryId: 0,
+          country: '',
+          admin1: '',
+          admin2: '',
+          admin3: '',
+          admin4: '',
+        ),
         filter: (value) => initialList.where((element) => element.name.toLowerCase().contains(value)).toList(),
         emptyWidget: const Center(child: Text('No results')),
         inputDecoration: InputDecoration(
@@ -101,7 +122,7 @@ class SearchableCityList extends StatelessWidget {
   }
 }
 
-class CityDataItem extends StatelessWidget {
+/*class CityDataItem extends StatelessWidget {
   final CityData city;
 
   const CityDataItem({required this.city});
@@ -117,4 +138,4 @@ class CityDataItem extends StatelessWidget {
       },
     );
   }
-}
+}*/

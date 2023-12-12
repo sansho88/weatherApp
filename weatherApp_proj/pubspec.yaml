@@ -40,6 +40,7 @@ dependencies:
   geolocator: ^10.1.0
   http: ^1.1.2
   searchable_listview: ^2.9.1
+  flutter_typeahead: ^5.0.1
 
 dev_dependencies:
   flutter_test:
