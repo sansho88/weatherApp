@@ -144,11 +144,66 @@ class _MyHomePageState extends State<MyHomePage> {
             title: Text(widget.title),
             bottom: AppBar(
               actions: [
-                IconButton(onPressed: (){setState(() {
-                  isCitySearched = false;
-                  controller.text = "";
-                });}, icon: const Icon(Icons.gps_fixed)),
-
+                SizedBox(width: 350, height: 52,
+                  child:
+                    TypeAheadField<CityDataItem>(
+                    suggestionsCallback: (search) async {
+                      if (search.isNotEmpty) {
+                        return await fetchCitiesData(search);
+                      } else {
+                        return [];
+                      }
+                    },
+                    builder: (context, controller, focusNode) {
+                      return TextField(
+                          controller: controller,
+                          focusNode: focusNode,
+                          autofocus: true,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'City'
+                          )
+                      );
+                    },
+                    itemBuilder: (context, city) {
+                      return ListTile(
+                        title: Text(city.name),
+                        subtitle: Text("${city.countryCode}, ${city.longitude}, ${city.latitude}"),
+                      );
+                    },
+                    onSelected: (city) {
+                      Navigator.of(context).push<void>(
+                        MaterialPageRoute(
+                          builder: (context) => CityDataItem(name: city.name,
+                            latitude: city.latitude,
+                            longitude: city.longitude,
+                            elevation: city.elevation,
+                            featureCode: city.featureCode,
+                            countryCode: city.countryCode,
+                            id: 0,
+                            admin1Id: 0,
+                            admin2Id: 0,
+                            admin3Id: 0,
+                            admin4Id: 0,
+                            timezone: '',
+                            population: 0,
+                            postcodes: [],
+                            countryId: 0,
+                            country: '',
+                            admin1: '',
+                            admin2: '',
+                            admin3: '',
+                            admin4: '',
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                    IconButton(onPressed: (){setState(() {
+                      isCitySearched = false;
+                      controller.text = "";
+                    });}, icon: const Icon(Icons.gps_fixed)),
               ],
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             ),
@@ -198,62 +253,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                   }
 
                                 }),
-                            /*SearchableCityList(initialList: cities),*/
-                            TypeAheadField<CityDataItem>(
-                              suggestionsCallback: (search) async {
-                                if (search.isNotEmpty) {
-                                  debugPrint("Search of $search initiated");
-                                  return await fetchCitiesData(search);
-                                } else {
-                                  debugPrint("Nothing to search");
-                                  return [];
-                                }
-                              },
-                              builder: (context, controller, focusNode) {
-                                return TextField(
-                                    controller: controller,
-                                    focusNode: focusNode,
-                                    autofocus: true,
-                                    decoration: const InputDecoration(
-                                        border: OutlineInputBorder(),
-                                        labelText: 'City'
-                                    )
-                                );
-                              },
-                              itemBuilder: (context, city) {
-                                return ListTile(
-                                  title: Text(city.name),
-                                  subtitle: Text("${city.countryCode}, ${city.longitude}, ${city.latitude}"),
-                                );
-                              },
-                              onSelected: (city) {
-                                Navigator.of(context).push<void>(
-                                  MaterialPageRoute(
-                                    builder: (context) => CityDataItem(name: city.name,
-                                      latitude: city.latitude,
-                                      longitude: city.longitude,
-                                      elevation: city.elevation,
-                                      featureCode: city.featureCode,
-                                      countryCode: city.countryCode,
-                                      id: 0,
-                                      admin1Id: 0,
-                                      admin2Id: 0,
-                                      admin3Id: 0,
-                                      admin4Id: 0,
-                                      timezone: '',
-                                      population: 0,
-                                      postcodes: [],
-                                      countryId: 0,
-                                      country: '',
-                                      admin1: '',
-                                      admin2: '',
-                                      admin3: '',
-                                      admin4: '',
-                                    ),
-                                  ),
-                                );
-                              },
-                            )
                           ],
                         ),
                       ),
