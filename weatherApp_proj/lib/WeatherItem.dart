@@ -1,29 +1,55 @@
 class WeatherItem {
   final double latitude;
   final double longitude;
-  /*final Map<String, dynamic> hourlyUnits;
-  final List<String> hourlyTime;
-  final List<double> hourlyTemperature;*/
+  final double generationTimeMs;
+  final int utcOffsetSeconds;
+  final String timezone;
+  final String timezoneAbbreviation;
+  final double elevation;
+  final Map<String, String> currentUnits;
+  final Map<String, dynamic> current;
+  final Map<String, String> hourlyUnits;
+  final Map<String, dynamic> hourly;
+  final Map<String, dynamic> daily;
+  final int weather_code;
 
   WeatherItem({
     required this.latitude,
     required this.longitude,
-    /*required this.hourlyUnits,
-    required this.hourlyTime,
-    required this.hourlyTemperature,*/
+    required this.weather_code,
+    required this.generationTimeMs,
+    required this.utcOffsetSeconds,
+    required this.timezone,
+    required this.timezoneAbbreviation,
+    required this.elevation,
+    required this.currentUnits,
+    required this.current,
+    required this.hourlyUnits,
+    required this.hourly,
+    required this.daily,
   });
 
   factory WeatherItem.fromJson(Map<String, dynamic> json) {
+    print("[WeatherItem] ${json}");
     return WeatherItem(
       latitude: json['latitude'],
-      longitude: json['longitude'],
-      /*hourlyUnits: json['hourly_units'],
-      hourlyTime: List<String>.from(json['hourly']['time']),
-      hourlyTemperature: List<double>.from(json['hourly']['temperature_2m']),*/
+      longitude: json['longitude'] ,
+      weather_code: json['current']['weather_code']/*json['weather_code']*/,
+      generationTimeMs: json['generationtime_ms'],
+      utcOffsetSeconds: json['utc_offset_seconds'],
+      timezone: json['timezone'] ?? "",
+      timezoneAbbreviation: json['timezone_abbreviation'] ?? "",
+      elevation: json['elevation'],
+      currentUnits: Map<String, String>.from(json['current_units'] ?? {}),
+      current: Map<String, dynamic>.from(json['current'] ?? {}),
+      hourlyUnits: Map<String, String>.from(json['hourly_units'] ?? {}),
+      hourly: Map<String, dynamic>.from(json['hourly'] ?? {}),
+      daily: Map<String, dynamic>.from(json['daily'] ?? {}),
     );
   }
 
-  Map<int, String> weatherCodes = {
+
+Map<int, String> weatherCodes = {
     0: 'Clear sky',
     1: 'Mainly clear',
     2: 'Partly cloudy',

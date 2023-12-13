@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:weather_app_proj/TabBar.dart';
-import 'package:animated_search_bar/animated_search_bar.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'CityDataItem.dart';
@@ -44,7 +43,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var selectedItemIndex = 0;
   final mode = ["Current", "Today", "Weekly"];
-  var city = "";
+  var citySelected = "";
   bool isCitySearched = false;
   WeatherItem? weatherItem;
 
@@ -111,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
   
-  Future<void> fetchData(Position position) async {
+  Future<void> fetchDataMeteoFromLocation(Position position) async {
     var baseUrl = Uri.parse('https://api.open-meteo.com/v1/forecast?'
         'latitude=${position.latitude}'
         '&longitude=${position.longitude}'
@@ -127,9 +126,33 @@ class _MyHomePageState extends State<MyHomePage> {
         debugPrint("urlRequested: $baseUrl");
       }
     }catch(error){
-      debugPrint("Petite erreur: $error");
+      debugPrint("[fetchDataMeteoFromLocation] Petite erreur: $error");
     }
   }
+  Future<WeatherItem?> fetchDataMeteoFromCity(CityDataItem cityDataItem) async {
+    var baseUrl = Uri.parse('https://api.open-meteo.com/v1/forecast?'
+        'latitude=${cityDataItem.latitude}'
+        '&longitude=${cityDataItem.longitude}'
+        '&current=temperature_2m,weather_code,wind_speed_10m'
+        '&hourly=temperature_2m,weather_code,wind_speed_10m'
+        '&daily=weather_code,temperature_2m_max,temperature_2m_min'
+        '&timezone=Europe%2FBerlin');
+
+     /* try {*/
+        var response = await http.get(baseUrl);
+        //debugPrint("response=${response.body}");
+        Map<String, dynamic> jsonResponse = json.decode(response.body);
+        if (response.statusCode == 200){
+          weatherItem = WeatherItem.fromJson(jsonResponse);
+          return weatherItem;
+          debugPrint("WEATHER ITEM long: ${weatherItem?.longitude}");
+          debugPrint("urlRequested: $baseUrl");
+        }
+      /*}catch(error){
+        debugPrint("[fetchDataMeteoFromCity] Petite erreur: $error");
+      }*/
+      return null;
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +195,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       );
                     },
                     onSelected: (city) {
-                      Navigator.of(context).push<void>(
+                      citySelected = city.name;
+                      isCitySearched = true;
+                      var meteo = fetchDataMeteoFromCity(city);
+                      print("WEATHER ITEM ======>" + weatherItem.toString());
+                      
+                      
+                      /*Navigator.of(context).push<void>(
                         MaterialPageRoute(
                           builder: (context) => CityDataItem(name: city.name,
                             latitude: city.latitude,
@@ -196,7 +225,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             admin4: '',
                           ),
                         ),
-                      );
+                      );*/
                     },
                   ),
                 ),
@@ -228,7 +257,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 const TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
                           ),
                           isCitySearched ?
-                            Text(city,
+                            Text(citySelected,
                               style:
                                 const TextStyle(fontSize: 32),
                             ) :
@@ -242,8 +271,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                   else{
                                     if (snapshot.hasData && snapshot.data != null){
                                       Position? pos = snapshot.data;
-                                      if (pos != null)
-                                        fetchData(pos);
+                                     /* if (pos != null)
+                                        fetchDataMeteoFromLocation(pos);*/
                                       return Text("${pos!.latitude}, ${pos.longitude}",
                                       style: TextStyle(fontSize: 22),);
                                     }
@@ -251,8 +280,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                       return const Text('Position unavailable');
                                     }
                                   }
-
                                 }),
+                            weatherItem != null ? ListTile(title: Text(weatherItem!.weatherCodes[weatherItem?.weather_code]!),) : const Text("No meteo"),
                           ],
                         ),
                       ),

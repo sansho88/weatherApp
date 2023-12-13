@@ -76,14 +76,14 @@ class CityDataItem extends StatelessWidget {
       elevation: 2.0,
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
               title: Text('Name: $name'),
             ),
-            ListTile(
+            /*ListTile(
               title: Text('Latitude: $latitude'),
             ),
             ListTile(
@@ -97,7 +97,7 @@ class CityDataItem extends StatelessWidget {
             ),
             ListTile(
               title: Text('Country Code: $countryCode'),
-            ),
+            ),*/
           ],
         ),
       ),
