@@ -278,6 +278,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             ◦ The weather description (cloudy, sunny, rainy, etc.) by hours.
                                             ◦ The wind speed (in km/h) by hours.*/
                                           case "Today":
+                                            List<String> days = [];
                                             List<String> hours = [];
                                             List<double> temperatures = [];
                                             List<int> weatherCodes = [];
@@ -292,7 +293,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                                 case "time":
                                                   for (var date in timeTemps.value){
                                                     var hourString = date.toString();
-                                                    var hour = hourString.split("T")[1];
+                                                    var stringSplitted = hourString.split("T");
+                                                    var hour = stringSplitted[1];
+                                                    var day = stringSplitted[0];
+                                                    day = day.replaceAll('-', '/');
+                                                    days.add(day);
                                                     hours.add(hour);
                                                     if (hours.length == 24) break;
                                                   }
@@ -317,49 +322,29 @@ class _MyHomePageState extends State<MyHomePage> {
                                                   break;
                                               }
                                             }
-                                            
-                                            var cards = <Widget>[];
-
-                                            for(var i = 0; i < 24; ++i){
-                                              cards.add(
-                                                  Card(
-                                                      child: Column(
-                                                          mainAxisSize: MainAxisSize.min,
-                                                          children: <Widget>[
-                                                            ListTile(
-                                                              leading: Text(hours.elementAt(i)),
-                                                              title: Text('${temperatures.elementAt(i)}°C'),
-                                                              subtitle: Text('${windSpeeds.elementAt(i)}m/s'),
-                                                            ),
-                                                          ]
-                                                      )
-                                                  )
-                                              );
-                                            }
-
-
                                             return SizedBox(
-                                              height: MediaQuery.of(context).size.height / 8, // ou une hauteur spécifique
+                                              height: MediaQuery.of(context).size.height / 7, // ou une hauteur spécifique
                                               child: ListView.builder(
                                                   itemCount: 24,
                                                   scrollDirection: Axis.horizontal,
                                                   itemBuilder: (BuildContext context, int index) {
                                                     return Card(
-                                                  color: Colors.yellow[50],
-                                                  elevation: 8.0,
-                                                  margin: const EdgeInsets.all(4.0),
-                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                                                  child: Column(
-                                                    children: [
-                                                      Text(hours.elementAt(index),
-                                                        style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w700,
+                                                        color: Colors.grey[300],
+                                                        elevation: 8.0,
+                                                        margin: const EdgeInsets.all(3.0),
+                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                                        child: Column( mainAxisSize: MainAxisSize.min,
+                                                          children: [
+                                                            Text("  ${days.elementAt(index)}  ", style: const TextStyle(color: Colors.white),),
+                                                            Text(" ${hours.elementAt(index)} ",
+                                                              style:  const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w700, color: Colors.white,
+                                                              ),
+                                                            ),
+                                                            Text(getWeatherEmoji(weatherCodes.elementAt(index))),
+                                                            Text('${temperatures.elementAt(index)}°C', style: const TextStyle(color: Colors.white),),
+                                                            Text('${windSpeeds.elementAt(index)}m/s', style: const TextStyle(color: Colors.white)),
+                                                          ],
                                                         ),
-                                                      ),
-                                                      Text(getWeatherEmoji(weatherCodes.elementAt(index))),
-                                                      Text('${temperatures.elementAt(index)}°C'),
-                                                      Text('${windSpeeds.elementAt(index)}m/s'),
-                                                    ],
-                                                  ),
                                                 );
 
                                               }),
