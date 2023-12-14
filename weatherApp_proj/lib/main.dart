@@ -352,10 +352,72 @@ class _MyHomePageState extends State<MyHomePage> {
 
                                         /**The location (city name, region and country).
                                             • The list of the weather for each day of the week with the following data:
-                                            ◦ The date.
-                                            ◦ The min and max temperatures of the day
-                                            ◦ The weather description (cloudy, sunny, rainy, etc.).*/
-                                          case "Weekly": return Text("TODO");
+                                              ◦ The date.
+                                              ◦ The min and max temperatures of the day
+                                              ◦ The weather description (cloudy, sunny, rainy, etc.).
+                                         */
+                                          case "Weekly":
+                                            List<String> days = [];
+                                            List<double> minTemperatures = [];
+                                            List<double> maxTemperatures = [];
+                                            List<int> weatherCodes = [];
+                                            /** weatherItem!.daily.values
+                                             * First={date}T{hours}
+                                             * Last=[temperatures]
+                                             * */
+                                            for(var timeTemps in weatherItem!.daily.entries){
+                                              var key = timeTemps.key;
+                                              switch(key){
+                                                case "time":
+                                                  for (var date in timeTemps.value){
+                                                    var hourString = date.toString();
+                                                    var stringSplitted = hourString.split("T");
+                                                    var day = stringSplitted[0];
+                                                    day = day.replaceAll('-', '/');
+                                                    days.add(day);
+                                                  }
+                                                  break;
+                                                case "temperature_2m_max":
+                                                  for (var temp in timeTemps.value){
+                                                    maxTemperatures.add(temp as double);
+                                                  }
+                                                  break;
+                                                case "temperature_2m_min":
+                                                  for (var temp in timeTemps.value){
+                                                    minTemperatures.add(temp as double);
+                                                  }
+                                                  break;
+                                                case "weather_code":
+                                                  for (var codes in timeTemps.value){
+                                                    weatherCodes.add(codes as int);
+                                                  }
+                                                  break;
+                                              }
+                                            }
+                                            return SizedBox(
+                                              height: MediaQuery.of(context).size.height - 220,
+                                              width: MediaQuery.of(context).size.width / 2.5,
+                                              child: ListView.builder(
+                                                  itemCount: 7,
+                                                  scrollDirection: Axis.vertical,
+                                                  itemBuilder: (BuildContext context, int index) {
+                                                    return Card(
+                                                      color: Colors.grey[300],
+                                                      elevation: 8.0,
+                                                      margin: const EdgeInsets.all(5.0),
+                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                                      child: Column( mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          Text("  ${days.elementAt(index)}  ", style: const TextStyle(color: Colors.white, fontSize: 20),),
+                                                          Text(getWeatherEmoji(weatherCodes.elementAt(index)), style: const TextStyle(color: Colors.white, fontSize: 30)),
+                                                          Text('${minTemperatures.elementAt(index)}°C / ${maxTemperatures.elementAt(index)}°C', style: const TextStyle(color: Colors.white, fontSize: 20),),
+                                                        ],
+                                                      ),
+                                                    );
+
+                                                  }),
+                                            );
+
                                           default: return Text("Nothing to show");
                                         }
                                       }
@@ -366,7 +428,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                   return const Text('Weather unavailable');
                               }
                             ),
-                            weatherItem != null ? ListTile(title: Text(weatherItem!.weatherCodes[weatherItem?.weather_code]!),) : const Text("No meteo"),
                           ],
                         ),
                       ),

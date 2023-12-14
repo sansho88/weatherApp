@@ -35,7 +35,6 @@ class WeatherItem {
   });
 
   factory WeatherItem.fromJson(Map<String, dynamic> json) {
-    print("[WeatherItem] ${json}");
     return WeatherItem(
       latitude: json['latitude'],
       longitude: json['longitude'] ,
