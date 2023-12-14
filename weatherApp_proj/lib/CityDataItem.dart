@@ -1,48 +1,48 @@
 import 'package:flutter/material.dart';
 
 class CityDataItem extends StatelessWidget {
-  final int id;
+  int id;
   final String name;
   final double latitude;
   final double longitude;
   final double elevation;
   final String featureCode;
   final String countryCode;
-  final int admin1Id;
-  final int admin2Id;
-  final int admin3Id;
-  final int admin4Id;
-  final String timezone;
+  int admin1Id;
+  int admin2Id;
+  int admin3Id;
+  int admin4Id;
+  String timezone;
   final int population;
-  final List<String> postcodes;
+  List<String> postcodes;
   final int countryId;
-  final String country;
-  final String admin1;
-  final String admin2;
-  final String admin3;
-  final String admin4;
+  String country;
+  String admin1;
+  String admin2;
+  String admin3;
+  String admin4;
 
-  const CityDataItem({super.key,
-    required this.id,
+  CityDataItem({super.key,
+     this.id = 0,
     required this.name,
     required this.latitude,
     required this.longitude,
     required this.elevation,
     required this.featureCode,
     required this.countryCode,
-    required this.admin1Id,
-    required this.admin2Id,
-    required this.admin3Id,
-    required this.admin4Id,
-    required this.timezone,
-    required this.population,
-    required this.postcodes,
-    required this.countryId,
+     this.admin1Id = 0,
+     this.admin2Id = 0,
+     this.admin3Id = 0,
+     this.admin4Id = 0,
+     this.timezone = "",
+     this.population = 0,
+     this.postcodes = const [""],
+     this.countryId = 0,
     required this.country,
     required this.admin1,
-    required this.admin2,
-    required this.admin3,
-    required this.admin4,
+     this.admin2 = "",
+     this.admin3 = "",
+     this.admin4 = "",
   });
 
   factory CityDataItem.fromJson(Map<String, dynamic> json) {

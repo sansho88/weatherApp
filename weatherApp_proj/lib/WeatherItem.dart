@@ -7,6 +7,11 @@ class WeatherItem {
   final String timezoneAbbreviation;
   final double elevation;
   final Map<String, String> currentUnits;
+  /**"time": "2023-12-13T16:45",
+      "interval": 900,
+      "temperature_2m": 5.1,
+      "weather_code": 3,
+      "wind_speed_10m": 6.8*/
   final Map<String, dynamic> current;
   final Map<String, String> hourlyUnits;
   final Map<String, dynamic> hourly;
@@ -47,6 +52,7 @@ class WeatherItem {
       daily: Map<String, dynamic>.from(json['daily'] ?? {}),
     );
   }
+
 
 
 Map<int, String> weatherCodes = {
