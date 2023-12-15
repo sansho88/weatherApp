@@ -423,21 +423,26 @@ class _MyHomePageState extends State<MyHomePage> {
                                                 break;
                                             }
                                           }
-                                          return SizedBox(
-                                            height: MediaQuery.of(context).size.height / 1.5,
-                                            width: MediaQuery.of(context).size.width / 2.5,
-                                            child: ListView.builder(
-                                                itemCount: 7,
-                                                scrollDirection: Axis.vertical,
-                                                itemBuilder: (BuildContext context, int index) {
-                                                  return WeatherCard(
-                                                    contentWidgets: [
-                                                        Text("  ${days.elementAt(index)}  ", style: const TextStyle(color: Colors.white, fontSize: 20),),
-                                                        Text(getWeatherEmoji(weatherCodes.elementAt(index)), style: const TextStyle(color: Colors.white, fontSize: 30)),
-                                                        Text('${minTemperatures.elementAt(index)}°C / ${maxTemperatures.elementAt(index)}°C', style: const TextStyle(color: Colors.white, fontSize: 20),),
-                                                      ],
-                                                  );
-                                                }),
+                                          return Column(
+                                            children: [ LineChartSample2(times: days, minTempsList: minTemperatures, maxTempsList: maxTemperatures),
+                                              SizedBox(
+                                                height: MediaQuery.of(context).size.height / 2.5,
+                                                width: MediaQuery.of(context).size.width / 2.5,
+                                                child: ListView.builder(
+                                                    itemCount: 7,
+                                                    scrollDirection: Axis.vertical,
+                                                    itemBuilder: (BuildContext context, int index) {
+                                                      return WeatherCard(
+                                                        contentWidgets: [
+                                                            Text("  ${days.elementAt(index)}  ", style: const TextStyle(color: Colors.white, fontSize: 20),),
+                                                            Text(getWeatherEmoji(weatherCodes.elementAt(index)), style: const TextStyle(color: Colors.white, fontSize: 30)),
+                                                            Text('${minTemperatures.elementAt(index)}°C / ${maxTemperatures.elementAt(index)}°C', style: const TextStyle(color: Colors.white, fontSize: 20),),
+                                                          ],
+                                                      );
+                                                    }),
+                                              ),
+
+                                            ],
                                           );
 
                                         default: return Text("Nothing to show");
