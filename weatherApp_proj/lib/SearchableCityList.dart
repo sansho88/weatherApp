@@ -111,7 +111,7 @@ class SearchableCityList extends StatelessWidget {
           fillColor: Colors.white,
           focusedBorder: OutlineInputBorder(
             borderSide: const BorderSide(
-              color: Colors.blue,
+              color: Colors.red,
               width: 1.0,
             ),
             borderRadius: BorderRadius.circular(10.0),

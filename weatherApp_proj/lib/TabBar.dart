@@ -22,6 +22,7 @@ class WeatherBottomBar extends StatelessWidget {
       ],
       onTap: onTap,
       currentIndex: selectedItemIndex,
+      backgroundColor: Colors.transparent,
     );
 
   }
