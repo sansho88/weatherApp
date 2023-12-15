@@ -99,12 +99,9 @@ class _LineChartSample2State extends State<LineChartSample2> {
 
       } else {
         time = (i).toString();
-        print("TEMPLIST==>${tempList.toString()}");
         result.add(FlSpot(i.toDouble(), tempList.elementAt(i)));
-
         i++;
       }
-      print("i ==>${time}");
       }
     return result;
   }
@@ -116,8 +113,8 @@ class _LineChartSample2State extends State<LineChartSample2> {
     );
     String text;
     var tempList = temperatures?.toList();
-    var minTemp ;
-    var maxTemp;
+    late var minTemp ;
+    late var maxTemp;
 
     if (tempList!.isNotEmpty) {
       tempList.sort((a, b) => min(a.toInt(), b.toInt()));
@@ -140,12 +137,12 @@ class _LineChartSample2State extends State<LineChartSample2> {
   LineChartData mainData() {
     List<double> tempListA = temperatures!.isNotEmpty ? temperatures!.toList() : minTempsList!.toList() ;
     List<double> tempListB = temperatures!.isNotEmpty ? temperatures!.toList() : maxTempsList!.toList();
-    tempListA.sort((a, b) => min(a.toInt(), b.toInt()));
+    tempListA.sort((a, b) => a.compareTo(b));
     tempListB.sort((a, b) => max(a.toInt(), b.toInt()));
+    print("TempListA==>${tempListA.toString()}");
     final minTemp = (tempListA.first) - 2;
     final maxTemp = tempListB.first + 2;
-    print("Temperatures=${temperatures.toString()}\nminTemp=>${minTemp}\nmaxTemp=>${maxTemp}");
-
+print("min=$minTemp | max=> $maxTemp");
     return LineChartData(
     
       titlesData: FlTitlesData(
