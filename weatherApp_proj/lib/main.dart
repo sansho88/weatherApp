@@ -43,6 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var selectedItemIndex = 0;
   final mode = ["Current", "Today", "Weekly"];
   var citySelected = "";
+  late List<CityDataItem> cityDataList;
   bool isCitySearched = false;
   WeatherItem? weatherItem;
   CityDataItem? cityDataItem;
@@ -85,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
       if (response.statusCode == 200) {
         Map<String, dynamic> data = jsonDecode(response.body);
         List<dynamic> results = data['results'];
-        List<CityDataItem> cityDataList = results.map((json) => CityDataItem.fromJson(json)).toList();
+       cityDataList = results.map((json) => CityDataItem.fromJson(json)).toList();
         return cityDataList;
       } else {
         debugPrint('Request failed with status: ${response.statusCode}');
@@ -169,6 +170,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     builder: (context, controller, focusNode) {
                       return TextField(
+                        onSubmitted: (_) {cityDataItem = cityDataList.first;
+                        citySelected = "${cityDataItem!.name}\n${cityDataItem!.admin1}, ${cityDataItem!.country}";
+                        fetchDataMeteoFromCity(cityDataItem!);
+                        },
                           controller: controller,
                           focusNode: focusNode,
                           autofocus: true,
@@ -188,8 +193,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       cityDataItem = city;
                       citySelected = "${city.name}\n${city.admin1}, ${city.country}";
                       isCitySearched = true;
-                      var meteo = fetchDataMeteoFromCity(city);
-                      print("WEATHER ITEM ======>" + weatherItem.toString());
+                      fetchDataMeteoFromCity(city);
+                      position = null;
+                      FocusScope.of(context).unfocus();
+                      /* print("WEATHER ITEM FROM SELECTED CITY => $weatherItem");*/
+
                     },
                   ),
                 ),
@@ -219,7 +227,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             Text(citySelected,
                              style: const TextStyle(fontSize: 22),
                             ) :
-                            FutureBuilder(future: getPosition(),
+                            (position != null && citySelected.isNotEmpty) ?  Text(citySelected,
+                              style: const TextStyle(fontSize: 22),
+                            ): FutureBuilder(future: getPosition(),
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState == ConnectionState.waiting){
                                     return const CircularProgressIndicator();
@@ -395,7 +405,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                               }
                                             }
                                             return SizedBox(
-                                              height: MediaQuery.of(context).size.height - 220,
+                                              height: MediaQuery.of(context).size.height / 1.5,
                                               width: MediaQuery.of(context).size.width / 2.5,
                                               child: ListView.builder(
                                                   itemCount: 7,
