@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter/material.dart';
 import 'package:weather_app_proj/TabBar.dart';
@@ -11,6 +12,7 @@ import 'WeatherItem.dart';
 
 void main() {
   runApp(const MyApp());
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }
 
 class MyApp extends StatelessWidget {
@@ -78,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<List<CityDataItem>> fetchCitiesData(String search) async {
-    final String apiUrl = 'https://geocoding-api.open-meteo.com/v1/search?name=$search&count=10&language=fr&format=json';
+    final String apiUrl = 'https://geocoding-api.open-meteo.com/v1/search?name=$search&count=5&language=fr&format=json';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -170,22 +172,24 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     builder: (context, controller, focusNode) {
                       return TextField(
-                        onSubmitted: (_) {cityDataItem = cityDataList.first;
-                        citySelected = "${cityDataItem!.name}\n${cityDataItem!.admin1}, ${cityDataItem!.country}";
-                        fetchDataMeteoFromCity(cityDataItem!);
+                        onSubmitted: (_) {
+                          cityDataItem = cityDataList.first;
+                          citySelected = "${cityDataItem!.name}\n${cityDataItem!.admin1}, ${cityDataItem!.country}";
+                          fetchDataMeteoFromCity(cityDataItem!);
                         },
                           controller: controller,
                           focusNode: focusNode,
                           autofocus: true,
                           decoration: const InputDecoration(
                               border: OutlineInputBorder(),
-                              labelText: 'City'
-                          )
+                              labelText: 'Search Location'
+                          ),
+                        maxLength: 100,
                       );
                     },
                     itemBuilder: (context, city) {
                      return ListTile(
-                          title: Text(city.name),
+                          title: Text(city.name, style: const TextStyle(fontWeight: FontWeight.bold),),
                           subtitle:Text("${city.countryCode}, ${city.admin1}, ${city.country}"),
                         );
                     },
