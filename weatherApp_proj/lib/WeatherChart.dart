@@ -25,6 +25,10 @@ class _WeatherChartState extends State<WeatherChart> {
     Colors.purple.shade900,
     Colors.blue,
   ];
+  List<Color> redGradientColors = [
+    Colors.red.shade900,
+    Colors.orange,
+  ];
   final List<String> times;
   List<double>? temperatures;
   List<double>? minTempsList;
@@ -151,25 +155,6 @@ class _WeatherChartState extends State<WeatherChart> {
       minY: minTemp.roundToDouble() - 2,
       maxY: maxTemp.roundToDouble() + 2,
       lineBarsData: [
-        LineChartBarData(
-          spots: getSpots(temperatures!.isNotEmpty ? temperatures!.toList() : minTempsList!.toList()),
-          isCurved: true,
-          gradient: LinearGradient(
-            colors: gradientColors,
-          ),
-          barWidth: 2,
-          dotData: const FlDotData(
-            show: false,
-          ),
-          belowBarData: BarAreaData(
-            show: true,
-            gradient: LinearGradient(
-              colors: gradientColors
-                  .map((color) => color.withOpacity(0.3))
-                  .toList(),
-            ),
-          ),
-        ),
         (temperatures!.isEmpty)?
         LineChartBarData(
           spots: getSpots(maxTempsList!),
@@ -182,12 +167,38 @@ class _WeatherChartState extends State<WeatherChart> {
           belowBarData: BarAreaData(
             show: true,
             gradient: LinearGradient(
-              colors: gradientColors
-                  .map((color) => color.withOpacity(0.3))
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: redGradientColors
+                  .map((color) => color.withOpacity(0.5))
                   .toList(),
             ),
           ),
         ): LineChartBarData(),
+        LineChartBarData(
+          spots: getSpots(temperatures!.isNotEmpty ? temperatures!.toList() : minTempsList!.toList()),
+          isCurved: true,
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: gradientColors
+                .map((color) => color.withOpacity(0.7))
+                .toList(),
+          ),
+          barWidth: 2,
+          dotData: const FlDotData(
+            show: false,
+          ),
+          belowBarData: BarAreaData(
+            show: true,
+            gradient: LinearGradient(
+              colors: gradientColors
+                  .map((color) => color.withOpacity(0.5))
+                  .toList(),
+            ),
+          ),
+        ),
+
       ],
     );
   }

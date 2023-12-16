@@ -281,7 +281,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 if (snapshot.connectionState == ConnectionState.waiting){
                                   return const CircularProgressIndicator();
                                 } else if (snapshot.hasError) {
-                                  return Text('[Error] ${snapshot.error}');
+                                  return Text('[Error] ${snapshot.error}', style: const TextStyle(color: Colors.red),);
                                 }
                                 else{
                                   if (snapshot.hasData && snapshot.data != null){
