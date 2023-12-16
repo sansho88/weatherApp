@@ -13,7 +13,7 @@ import 'package:weather_app_proj/WeatherCard.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 
-Future<void> main() async {
+void main() async {
   runApp(const MyApp());
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }
@@ -162,9 +162,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return GestureDetector(
       onTap: () => {FocusScope.of(context).unfocus(),
-        getPosition().then((pos) => debugPrint(pos.toString())).toString()
       },
       child: Scaffold(
+          resizeToAvoidBottomInset: false,
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
@@ -258,11 +258,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                     var pos = snapshot.data;
                                     if (pos != null)
                                     {
-                                      fetchDataMeteoFromLocation(pos);
                                       position = pos;
+                                      fetchDataMeteoFromLocation(pos);
                                       placemarkFromCoordinates(pos.latitude, pos.longitude).then((value){
                                         var firstPlace = value.firstOrNull;
-                                        citySelected = "${(firstPlace?.locality ?? "")}, ${(firstPlace!.administrativeArea ?? "")}, ${(firstPlace.country ?? "Somewhere")}";
+                                        setState(() {
+                                          citySelected = "${(firstPlace?.locality ?? "")}, ${(firstPlace!.administrativeArea ?? "")}, ${(firstPlace.country ?? "Somewhere")}";
+
+                                        });
                                       });
                                       //todo: transform pos to City
                                     }
@@ -426,11 +429,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                           return Column(
                                             children: [ LineChartSample2(times: days, minTempsList: minTemperatures, maxTempsList: maxTemperatures),
                                               SizedBox(
-                                                height: MediaQuery.of(context).size.height / 2.5,
-                                                width: MediaQuery.of(context).size.width / 2.5,
+                                                height: MediaQuery.of(context).size.height / 6 - 18,
+                                                width: MediaQuery.of(context).size.width ,
                                                 child: ListView.builder(
                                                     itemCount: 7,
-                                                    scrollDirection: Axis.vertical,
+                                                    scrollDirection: Axis.horizontal,
                                                     itemBuilder: (BuildContext context, int index) {
                                                       return WeatherCard(
                                                         contentWidgets: [
@@ -449,7 +452,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       }
                                     }
                                   } else {
-                                    return const Text('Weather unavailable');
+                                    return const Text('Weather datas in progress...');
                                   }
                                 }
                                 return const Text('Weather unavailable');

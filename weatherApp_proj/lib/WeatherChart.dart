@@ -25,7 +25,7 @@ class LineChartSample2 extends StatefulWidget {
 
 class _LineChartSample2State extends State<LineChartSample2> {
   List<Color> gradientColors = [
-    Colors.cyan,
+    Colors.purple.shade900,
     Colors.blue,
   ];
   final List<String> times;
@@ -75,22 +75,11 @@ class _LineChartSample2State extends State<LineChartSample2> {
     );
   }
 
-  List<double> calculateTemperatureScale(double minTemperature, double maxTemperature, int divisions) {
-    List<double> scaleValues = [];
-    double interval = (maxTemperature - minTemperature) / (divisions - 1);
-
-    for (int i = 0; i < divisions; i++) {
-      scaleValues.add(minTemperature + (interval * i));
-    }
-
-    return scaleValues;
-  }
-
   List<FlSpot> getSpots(List<double> tempList){
     List<FlSpot> result = [];
     int i = 0;
 
-    for (var value in times) { //fixme: quand Weekly (donc temperatures == empty): times = dates et non pas xxH00...
+    for (var value in times) {
       String time;
       if (times.length > 7) {
         time = value.substring(0, 2);
@@ -112,25 +101,10 @@ class _LineChartSample2State extends State<LineChartSample2> {
       fontSize: 15,
     );
     String text;
-    var tempList = temperatures?.toList();
-    late var minTemp ;
-    late var maxTemp;
-
-    if (tempList!.isNotEmpty) {
-      tempList.sort((a, b) => min(a.toInt(), b.toInt()));
-      minTemp = tempList.first;
-      maxTemp = tempList.last;
-    } else
-      {
-        tempList = minTempsList;
-        tempList!.sort((a, b) => min(a.toInt(), b.toInt()));
-        minTemp = tempList.first;
-        tempList = maxTempsList;
-        tempList!.sort((a, b) => max(a.toInt(), b.toInt()));
-        maxTemp = tempList.first;
-      }
 
     text = "${value.toInt()}°C";
+    /*if (value.toInt() == meta.min.toInt() || value.toInt() == meta.max.toInt())
+      text = '';*/
     return Text(text, style: style, textAlign: TextAlign.left);
   }
 
@@ -139,10 +113,8 @@ class _LineChartSample2State extends State<LineChartSample2> {
     List<double> tempListB = temperatures!.isNotEmpty ? temperatures!.toList() : maxTempsList!.toList();
     tempListA.sort((a, b) => a.compareTo(b));
     tempListB.sort((a, b) => max(a.toInt(), b.toInt()));
-    print("TempListA==>${tempListA.toString()}");
     final minTemp = (tempListA.first) - 2;
     final maxTemp = tempListB.first + 2;
-print("min=$minTemp | max=> $maxTemp");
     return LineChartData(
     
       titlesData: FlTitlesData(
@@ -164,7 +136,7 @@ print("min=$minTemp | max=> $maxTemp");
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            interval: 2,
+            interval: 4,
             getTitlesWidget: leftTitleWidgets,
             reservedSize: 42,
           ),
@@ -176,8 +148,8 @@ print("min=$minTemp | max=> $maxTemp");
       ),
       minX: 0,
       maxX: times.length.toDouble() - 1,
-      minY: minTemp,
-      maxY: maxTemp + 2,
+      minY: minTemp - 4,
+      maxY: maxTemp + 4,
       lineBarsData: [
         LineChartBarData(
           spots: getSpots(temperatures!.isNotEmpty ? temperatures!.toList() : minTempsList!.toList()),
