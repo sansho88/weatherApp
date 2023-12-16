@@ -11,7 +11,7 @@ class WeatherCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.grey[300],
+      color: Color(0x88FFFFFF),
       elevation: 8.0,
       margin: const EdgeInsets.all(5.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

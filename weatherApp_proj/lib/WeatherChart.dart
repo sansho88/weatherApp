@@ -1,17 +1,14 @@
-import 'dart:ffi';
-import 'dart:math';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-class LineChartSample2 extends StatefulWidget {
+class WeatherChart extends StatefulWidget {
 
   final List<String> times;
   List<double> temperatures;
   List<double> minTempsList;
   List<double> maxTempsList;
 
-  LineChartSample2({
+  WeatherChart({
     super.key,
     required this.times,
     this.temperatures = const [],
@@ -20,10 +17,10 @@ class LineChartSample2 extends StatefulWidget {
   });
 
   @override
-  State<LineChartSample2> createState() => _LineChartSample2State(times, temperatures, minTempsList, maxTempsList);
+  State<WeatherChart> createState() => _WeatherChartState(times, temperatures, minTempsList, maxTempsList);
 }
 
-class _LineChartSample2State extends State<LineChartSample2> {
+class _WeatherChartState extends State<WeatherChart> {
   List<Color> gradientColors = [
     Colors.purple.shade900,
     Colors.blue,
@@ -33,7 +30,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
   List<double>? minTempsList;
   List<double>? maxTempsList;
 
-  _LineChartSample2State(this.times, this.temperatures, this.minTempsList, this.maxTempsList);
+  _WeatherChartState(this.times, this.temperatures, this.minTempsList, this.maxTempsList);
 
   @override
   Widget build(BuildContext context) {
@@ -64,10 +61,13 @@ class _LineChartSample2State extends State<LineChartSample2> {
     );
     Widget text;
     final indexTime = value.toInt();
-    if (indexTime % 3 == 0)
-      text = Text(times.elementAt(indexTime), style: style,);
-    else
-      text = const Text('', style: style);
+    var date;
+    if (times.length == 7) date = times.elementAt(indexTime).substring(5);
+    else date = times.elementAt(indexTime);
+
+
+    text = Text( date, style: style,);
+    
 
     return SideTitleWidget(
       axisSide: meta.axisSide,
@@ -112,9 +112,9 @@ class _LineChartSample2State extends State<LineChartSample2> {
     List<double> tempListA = temperatures!.isNotEmpty ? temperatures!.toList() : minTempsList!.toList() ;
     List<double> tempListB = temperatures!.isNotEmpty ? temperatures!.toList() : maxTempsList!.toList();
     tempListA.sort((a, b) => a.compareTo(b));
-    tempListB.sort((a, b) => max(a.toInt(), b.toInt()));
-    final minTemp = (tempListA.first) - 2;
-    final maxTemp = tempListB.first + 2;
+    tempListB.sort((a, b) => (a.compareTo(b)) * -1);
+    final minTemp = (tempListA.first);
+    final maxTemp = tempListB.first;
     return LineChartData(
     
       titlesData: FlTitlesData(
@@ -129,7 +129,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 30,
-            interval: 1,
+            interval: times.length == 7 ? 1 : 4,
             getTitlesWidget: bottomTitleWidgets,
           ),
         ),
@@ -148,8 +148,8 @@ class _LineChartSample2State extends State<LineChartSample2> {
       ),
       minX: 0,
       maxX: times.length.toDouble() - 1,
-      minY: minTemp - 4,
-      maxY: maxTemp + 4,
+      minY: minTemp.roundToDouble() - 2,
+      maxY: maxTemp.roundToDouble() + 2,
       lineBarsData: [
         LineChartBarData(
           spots: getSpots(temperatures!.isNotEmpty ? temperatures!.toList() : minTempsList!.toList()),

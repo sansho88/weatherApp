@@ -10,7 +10,6 @@ import 'package:weather_app_proj/WeatherChart.dart';
 import 'CityDataItem.dart';
 import 'WeatherItem.dart';
 import 'package:weather_app_proj/WeatherCard.dart';
-import 'package:fl_chart/fl_chart.dart';
 
 
 void main() async {
@@ -358,27 +357,27 @@ class _MyHomePageState extends State<MyHomePage> {
                                           return Column(
                                             children: [
                                               SizedBox(
-                                                height: MediaQuery.of(context).size.height / 4, // ou une hauteur spécifique
+                                                height: MediaQuery.of(context).size.height / 6, // ou une hauteur spécifique
                                                 child: ListView.builder(
                                                     itemCount: 24,
                                                     scrollDirection: Axis.horizontal,
                                                     itemBuilder: (BuildContext context, int index) {
                                                       return WeatherCard(
                                                           contentWidgets: [
-                                                              Text("  ${days.elementAt(index)}  ", style: const TextStyle(color: Colors.white),),
+                                                              Text("  ${days.elementAt(index)}  ", style: const TextStyle(fontSize: 18.0,color: Colors.white),),
                                                               Text(" ${hours.elementAt(index)} ",
-                                                                style:  const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w700, color: Colors.white,
+                                                                style:  const TextStyle(fontSize: 26.0, fontWeight: FontWeight.w700, color: Colors.white,
                                                                 ),
                                                               ),
                                                               Text(getWeatherEmoji(weatherCodes.elementAt(index))),
-                                                              Text('${temperatures.elementAt(index)}°C', style: const TextStyle(color: Colors.white),),
-                                                              Text('${windSpeeds.elementAt(index)}m/s', style: const TextStyle(color: Colors.white)),
+                                                              Text('${temperatures.elementAt(index)}°C', style: const TextStyle(fontSize: 18.0,color: Colors.white),),
+                                                              Text('${windSpeeds.elementAt(index)}m/s', style: const TextStyle(fontSize: 16.0,color: Colors.white)),
                                                             ],
                                                       );
 
                                                 }),
                                               ),
-                                              LineChartSample2(times: hours, temperatures: temperatures,),
+                                              WeatherChart(times: hours, temperatures: temperatures,),
                                             ],
                                           );
 
@@ -427,9 +426,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                             }
                                           }
                                           return Column(
-                                            children: [ LineChartSample2(times: days, minTempsList: minTemperatures, maxTempsList: maxTemperatures),
+                                            children: [ SizedBox(height: 300,
+                                                child: WeatherChart(times: days, minTempsList: minTemperatures, maxTempsList: maxTemperatures)),
                                               SizedBox(
-                                                height: MediaQuery.of(context).size.height / 6 - 18,
+                                                height: MediaQuery.of(context).size.height / 6,
                                                 width: MediaQuery.of(context).size.width ,
                                                 child: ListView.builder(
                                                     itemCount: 7,
@@ -439,7 +439,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                                         contentWidgets: [
                                                             Text("  ${days.elementAt(index)}  ", style: const TextStyle(color: Colors.white, fontSize: 20),),
                                                             Text(getWeatherEmoji(weatherCodes.elementAt(index)), style: const TextStyle(color: Colors.white, fontSize: 30)),
-                                                            Text('${minTemperatures.elementAt(index)}°C / ${maxTemperatures.elementAt(index)}°C', style: const TextStyle(color: Colors.white, fontSize: 20),),
+                                                            Text(' ${maxTemperatures.elementAt(index)}°C ', style: const TextStyle(color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold),),
+                                                            Text(' ${minTemperatures.elementAt(index)}°C ', style: const TextStyle(color: Colors.blue, fontSize: 20, fontWeight: FontWeight.bold),),
                                                           ],
                                                       );
                                                     }),
