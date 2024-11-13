@@ -110,8 +110,6 @@ class _WeatherChartState extends State<WeatherChart> {
     String text;
 
     text = "${value.toInt()}°C";
-    /*if (value.toInt() == meta.min.toInt() || value.toInt() == meta.max.toInt())
-      text = '';*/
     return Text(text, style: style, textAlign: TextAlign.left);
   }
 

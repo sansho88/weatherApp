@@ -123,7 +123,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
     try {
       var response = await http.get(baseUrl);
-      debugPrint("response=${response.body}");
       Map<String, dynamic> jsonResponse = json.decode(response.body);
       if (response.statusCode == 200){
         weatherItem = WeatherItem.fromJson(jsonResponse);
@@ -267,7 +266,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
                                         });
                                       });
-                                      //todo: transform pos to City
                                     }
                                     return Text(citySelected,
                                       style: const TextStyle(fontSize: 22),);
@@ -438,10 +436,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                                     itemBuilder: (BuildContext context, int index) {
                                                       return WeatherCard(
                                                         contentWidgets: [
-                                                            Text("  ${days.elementAt(index)}  ", style: const TextStyle(color: Colors.white, fontSize: 20),),
+                                                            Text("  ${days.elementAt(index)}  ", style:  const TextStyle(color: Colors.grey, fontSize: 20,
+                                                                shadows:  [
+                                                                  Shadow(color: Colors.black87,offset: Offset(1,1),blurRadius: 0.5)
+                                                                ]),),
                                                             Text(getWeatherEmoji(weatherCodes.elementAt(index)), style: const TextStyle(color: Colors.white, fontSize: 30)),
-                                                            Text(' ${maxTemperatures.elementAt(index)}°C ', style: const TextStyle(color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold),),
-                                                            Text(' ${minTemperatures.elementAt(index)}°C ', style: const TextStyle(color: Colors.blue, fontSize: 20, fontWeight: FontWeight.bold),),
+                                                            Text(' ${maxTemperatures.elementAt(index)}°C ', style: TextStyle(color: Colors.red.shade900, fontSize: 20, fontWeight: FontWeight.bold),),
+                                                            Text(' ${minTemperatures.elementAt(index)}°C ', style: TextStyle(color: Colors.purple.shade900, fontSize: 20, fontWeight: FontWeight.bold),),
                                                           ],
                                                       );
                                                     }),
