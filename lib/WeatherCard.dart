@@ -5,8 +5,8 @@ class WeatherCard extends StatelessWidget {
 
   const WeatherCard({
     required this.contentWidgets,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

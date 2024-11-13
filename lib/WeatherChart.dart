@@ -65,9 +65,12 @@ class _WeatherChartState extends State<WeatherChart> {
     );
     Widget text;
     final indexTime = value.toInt();
-    var date;
-    if (times.length == 7) date = times.elementAt(indexTime).substring(5);
-    else date = times.elementAt(indexTime);
+    String date;
+    if (times.length == 7) {
+      date = times.elementAt(indexTime).substring(5);
+    } else {
+      date = times.elementAt(indexTime);
+    }
 
 
     text = Text( date, style: style,);

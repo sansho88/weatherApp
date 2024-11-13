@@ -83,7 +83,7 @@ class SearchableCityList extends StatelessWidget {
     return SizedBox(width: 300, height: 100,
       child: SearchableList<CityData>(
         initialList: initialList,
-        builder: (List<CityData> list, int index, CityData city) => CityDataItem(name: city.name,
+        itemBuilder: (CityData city) => CityDataItem(name: city.name,
           latitude: city.latitude,
           longitude: city.longitude,
           elevation: city.elevation,

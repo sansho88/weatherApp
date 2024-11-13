@@ -110,8 +110,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<WeatherItem?> fetchDataMeteoFromLocation(Position? position) async {
-    if (position == null)
+    if (position == null) {
       return null;
+    }
     var baseUrl = Uri.parse('https://api.open-meteo.com/v1/forecast?'
         'latitude=${position.latitude}'
         '&longitude=${position.longitude}'
@@ -296,7 +297,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         case "Current": return WeatherCard(
                                           contentWidgets: [
                                               Text("  ${weatherItem!.current["temperature_2m"]}°C  ", style: TextStyle(fontSize: 82),),
-                                              Text("${getWeatherEmoji(weather.weather_code)}",style: TextStyle(fontSize: 162)),
+                                              Text(getWeatherEmoji(weather.weather_code),style: TextStyle(fontSize: 162)),
                                               Text("${weather.weatherCodes[weather.weather_code]}",style: TextStyle(fontSize: 42),),
                                               const Icon(Icons.wind_power),
                                               Text("${weather.current["wind_speed_10m"]} km/h",style: TextStyle(fontSize: 22)),
@@ -330,7 +331,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                   var day = stringSplitted[0];
                                                   day = day.replaceAll('-', '/');
                                                   days.add(day);
-                                                  hours.add(hour.split(":")[0] + 'H');
+                                                  hours.add('${hour.split(":")[0]}H');
                                                   if (hours.length == 24) break;
                                                 }
                                                 break;
@@ -479,9 +480,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String getWeatherEmoji(int code){
     var result = '';
-    if (code >= 45 && code <= 57)
+    if (code >= 45 && code <= 57) {
       code = 45;
-    else if (code >= 61 && code <= 67)
+    } else if (code >= 61 && code <= 67)
       code = 61;
     else if (code >= 71 && code <= 77)
       code = 71;
